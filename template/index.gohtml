@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>A few good men</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj"
+            crossorigin="anonymous"></script>
+</head>
+<body>
+<nav class="navbar navbar-dark bg-primary navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Navbar</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="#">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Link</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        Dropdown
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="#">Action</a></li>
+                        <li><a class="dropdown-item" href="#">Another action</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+                </li>
+            </ul>
+            <form class="d-flex">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+        </div>
+    </div>
+</nav>
+<div class="container">
+    <div class="inner-main-body p-2 p-sm-3 collapse forum-content show">
+        {{ range $value := .Posts }}
+{{/*            <li>*/}}
+{{/*                <strong>{{ $value.Title }}</strong>: {{$value.Content}}*/}}
+{{/*                {{$value.Karma}}*/}}
+{{/*                {{$value.User.Username}}*/}}
+{{/*            </li>*/}}
+
+            <div class="card mb-2">
+                <div class="card-body p-2 p-sm-3">
+                    <div class="media forum-item"><a href="#" data-toggle="collapse" data-target=".forum-content"><img
+                                    src="https://bootdey.com/img/Content/avatar/avatar1.png" class="mr-3 rounded-circle"
+                                    width="50" alt="User"></a>
+                        <div class="media-body"><h6><a href="#" data-toggle="collapse" data-target=".forum-content"
+                                                       class="text-body">{{$value.Title}}</a></h6>
+                            <p class="text-secondary"> {{$value.Content}}</p>
+                            <p class="text-muted"><a href="">{{$value.User.Username}}</a> posted <span
+                                        class="text-secondary font-weight-bold">{{$value.PostedAt}}</span></p></div>
+                    </div>
+                </div>
+            </div>
+        {{ end }}
+{{/*        <ul class="pagination pagination-sm pagination-circle justify-content-center mb-0">*/}}
+{{/*            <li class="page-item disabled"><span class="page-link has-icon"><i*/}}
+{{/*                            class="material-icons">chevron_left</i></span></li>*/}}
+{{/*            <li class="page-item"><a class="page-link" href="javascript:void(0)">1</a></li>*/}}
+{{/*            <li class="page-item active"><span class="page-link">2</span></li>*/}}
+{{/*            <li class="page-item"><a class="page-link" href="javascript:void(0)">3</a></li>*/}}
+{{/*            <li class="page-item"><a class="page-link has-icon" href="javascript:void(0)"><i class="material-icons">chevron_right</i></a>*/}}
+{{/*            </li>*/}}
+{{/*        </ul>*/}}
+    </div>
+</div>
+<div>
+    <h2>My Account</h2>
+    <p>Name: {{.User.Username}}</p>
+    <p>Karma: {{.User.Karma}}</p>
+    <p>Post count: {{.User.PostCount}}</p>
+</div>
+<button class="enableEthereumButton">Connect MetaMask</button>
+<div>
+    <h2>Posts</h2>
+    {{ range $value := .Posts }}
+        <li>
+            <strong>{{ $value.Title }}</strong>: {{$value.Content}}
+            {{$value.Karma}}
+            {{$value.User.Username}}
+        </li>
+    {{ end }}
+
+</div>
+
+
+<div>
+    <h3>Sign Typed Data V4</h3>
+    <button type="button" id="signTypedDataV4Button">sign typed data v4</button>
+</div>
+</body>
+
+<script>
+    if (typeof window.ethereum !== 'undefined') {
+        console.log('MetaMask is installed!');
+    }
+
+    const ethereumButton = document.querySelector('.enableEthereumButton');
+    const showAccount = document.querySelector('.showAccount');
+
+    ethereumButton.addEventListener('click', () => {
+        getAccount();
+        // sendTransaction()
+    });
+
+    async function getAccount() {
+        const accounts = await ethereum.request({method: 'eth_requestAccounts'});
+        const account = accounts[0];
+
+        $.ajax({
+            type: "POST",
+            url: "/set_address",
+            data: {"address": account},
+        }).done(function () {
+            location.reload();
+        });
+    }
+</script>
+
+
+<script>
+    async function sendTransaction() {
+        try {
+            const transactionHash = await ethereum.request({
+                method: 'eth_sendTransaction',
+                params: [
+                    {
+                        nonce: '0x00', // ignored by MetaMask
+                        gasPrice: '0x09184e72a000', // customizable by user during MetaMask confirmation.
+                        gas: '0x2710', // customizable by user during MetaMask confirmation.
+                        to: '0xeD2770185E758d9E5537466323b35F161F8632fa', // Required except during contract publications.
+                        from: ethereum.selectedAddress, // must match user's active address.
+                        value: '0x00', // Only required to send ether to the recipient from the initiating external account.
+                        data:
+                            '0x7f7465737432000000000000000000000000000000000000000000000000000000600057', // Optional, but used for defining smart contract creation and interaction.
+                        chainId: '0x3', // Used to prevent transaction reuse across blockchains. Auto-filled by MetaMask.
+                        // to: '0xe1ea7f9425b8c00182c8a1820412eb4cc0d7b4e2',
+                        // 'from': '0x13CE3edD51fcfD12A187C6B413Ab86e26E1915A4',
+                        // value: 124
+                    },
+                ],
+            });
+            // Handle the result
+            console.log(transactionHash);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+</script>
+</html>
