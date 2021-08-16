@@ -2,6 +2,7 @@ package helpers
 
 import (
 	"fmt"
+	"time"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"math/big"
@@ -20,9 +21,10 @@ func GetPosts() []Post{
 	conn := getConn()
 	posts := []Post{}
 	lastPostId, _ := conn.LastPostId(&bind.CallOpts{Pending: true})
-	for i := lastPostId.Int64(); i >= 0; i = i -1{
-		post, _ := conn.Posts(&bind.CallOpts{Pending: true}, big.NewInt(i))
+	for i := lastPostId.Int64(); i > 0; i = i -1{
+		post, _ := conn.Posts(&bind.CallOpts{Pending: true}, big.NewInt(i-1))
 		user := GetUser(post.Owner.String())
+		postedAt := time.Unix(post.PostedAt.Int64(), 0)
 		posts = append(
 			posts,
 			Post{
@@ -30,11 +32,10 @@ func GetPosts() []Post{
 				post.Title,
 				post.Content,
 				post.Karma.Int64(),
-				post.PostedAt.String(),
+				postedAt.Format("02/01/2006, 15:04:05"),
 				user,
 			},
 		)
-		//posts = append(posts, Post{post)
 	}
 	return posts
 }
