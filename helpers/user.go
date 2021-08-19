@@ -3,13 +3,13 @@ package helpers
 import (
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
-	"math/big"
 )
 
 type User struct {
 	Username string
-	Karma big.Int
-	PostCount big.Int
+	Karma string
+	PostCount string
+	Address string
 }
 
 func GetUser(walletAddress string) User{
@@ -20,8 +20,7 @@ func GetUser(walletAddress string) User{
 	if err != nil {
 		panic(err)
 	}
-
-	return User{user.Name, *user.Karma, *user.PostCount}
+	return User{user.Name, (*user.Karma).String(), (*user.PostCount).String(), walletAddress}
 }
 
 

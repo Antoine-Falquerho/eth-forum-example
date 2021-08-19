@@ -2,6 +2,7 @@ package helpers
 
 import (
 	"fmt"
+	"log"
 	"time"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
@@ -9,6 +10,7 @@ import (
 )
 
 type Post struct {
+	ID int64
 	Owner common.Address
 	Title string
 	Content string
@@ -22,12 +24,14 @@ func GetPosts() []Post{
 	posts := []Post{}
 	lastPostId, _ := conn.LastPostId(&bind.CallOpts{Pending: true})
 	for i := lastPostId.Int64(); i > 0; i = i -1{
-		post, _ := conn.Posts(&bind.CallOpts{Pending: true}, big.NewInt(i-1))
+		post_id := i -1
+		post, _ := conn.Posts(&bind.CallOpts{Pending: true}, big.NewInt(post_id))
 		user := GetUser(post.Owner.String())
 		postedAt := time.Unix(post.PostedAt.Int64(), 0)
 		posts = append(
 			posts,
 			Post{
+				post_id,
 				post.Owner,
 				post.Title,
 				post.Content,
@@ -46,5 +50,19 @@ func AddPost(walletAddress string, title string, content string){
 	transactOpts := getTransactOpts()
 
 	_, err := conn.AddPost(transactOpts, conWalletAddress, title, content)
-	fmt.Println(err)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func AddVote(address string, post_id *big.Int, vote *big.Int){
+	fmt.Println(post_id)
+	fmt.Println(vote)
+	conWalletAddress := common.HexToAddress(address)
+	conn := getConn()
+	transactOpts := getTransactOpts()
+	_, err := conn.AddVote(transactOpts, conWalletAddress, post_id, vote)
+	if err != nil {
+		log.Fatal(err)
+	}
 }

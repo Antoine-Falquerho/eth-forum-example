@@ -47,18 +47,31 @@ contract Forum {
         uint user_last_post_id = users[_owner].post_count;
         userPosts[_owner][user_last_post_id] = post;
         last_post_id += 1;
+        users[_owner].post_count = user_last_post_id + 1;
     }
 
     function addVote(address _owner, uint _post_id, int _vote) public {
-        // TODO fix upvvote and then downvote (should be -2)
         Vote memory vote = Vote(msg.sender, _vote);
         Post memory post = posts[_post_id];
+        if(postVotes[_post_id][_owner].owner == address(0)){
+            // Update Post karma
+            posts[_post_id].karma += _vote;
+            // Update User karma
+            users[post.owner].karma += _vote;
+        } else {
+            Vote memory currentVote = postVotes[_post_id][_owner];
+            if(currentVote.vote != _vote){
+                if(_vote == 1){
+                    _vote = 2;
+                } else {
+                    _vote = -2;
+                }
+                // Update Post karma
+                posts[_post_id].karma += _vote;
+                // Update User karma
+                users[post.owner].karma += _vote;
+            }
+        }
         postVotes[_post_id][_owner] = vote;
-        // Update Post karma
-        posts[_post_id].karma += _vote;
-        // Update User karma
-        users[post.owner].karma += _vote;
-
-
     }
 }

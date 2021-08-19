@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"encoding/json"
 	"github.com/gorilla/schema"
+	"math/big"
 	"errors"
 )
 
@@ -18,6 +19,7 @@ func main(){
 	http.HandleFunc("/login", login)
 	http.HandleFunc("/users/update", updateAccount)
 	http.HandleFunc("/posts/new", addPostRequest)
+	http.HandleFunc("/add_user_vote", addUserVote)
 	//http.HandleFunc("/view/", makeHandler(homePage))
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
@@ -100,6 +102,27 @@ func updateAccount(w http.ResponseWriter, r *http.Request){
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 	}
 	helpers.UpdateName(address, updateUser.Username)
+	http.Redirect(w, r, "/", http.StatusSeeOther)
+}
+
+func addUserVote(w http.ResponseWriter, r *http.Request){
+	vote, ok := r.URL.Query()["vote"]
+	if !ok || len(vote[0]) < 1 {
+		log.Println("Url Param 'vote' is missing")
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+	}
+	post_id := new(big.Int)
+	post_id, ok = post_id.SetString(r.URL.Query()["post_id"][0], 10)
+
+	address, err := getSessionAddress(r)
+	if err != nil{
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+	}
+	vote_int := 1
+	if vote[0] == "down" {
+		vote_int = -1
+	}
+	helpers.AddVote(address, post_id, big.NewInt(int64(vote_int)))
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
