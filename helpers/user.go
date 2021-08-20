@@ -23,7 +23,6 @@ func GetUser(walletAddress string) User{
 	return User{user.Name, (*user.Karma).String(), (*user.PostCount).String(), walletAddress}
 }
 
-
 func UpdateName(walletAddress string, newName string){
 	conWalletAddress := common.HexToAddress(walletAddress)
 	conn := getConn()

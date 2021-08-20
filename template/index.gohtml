@@ -51,7 +51,7 @@
                                 <label>Username</label>
                                 <input type="text" name="username" class="form-control" value="{{.User.Username}}">
                             </div>
-                            <button type="submit" class="btn btn-primary">Update</button>
+                            <button type="submit" class="btn btn-primary mt-2">Update</button>
                         </form>
                     </div>
 
@@ -73,7 +73,7 @@
                             <label>Content</label>
                             <textarea name="content" class="form-control"></textarea>
                         </div>
-                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <button type="submit" class="btn btn-primary mt-2">Submit</button>
                     </form>
                 </div>
             </div>
@@ -123,13 +123,12 @@
         $.ajax({
             type: "POST",
             url: "/login",
-            contentType: "application/json",
-            dataType: "json",
-            data: JSON.stringify({"address": account}),
-            processData: false
-        }).done(function (data) {
+            data: JSON.stringify({"address": account})
+        }).done(function() {
+            location.reload();
+        }).fail(function() {
+            alert("Sorry. Server unavailable. ");
         });
-        location.reload();
     }
 </script>
 </html>

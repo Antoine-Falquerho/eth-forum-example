@@ -56,8 +56,6 @@ func AddPost(walletAddress string, title string, content string){
 }
 
 func AddVote(address string, post_id *big.Int, vote *big.Int){
-	fmt.Println(post_id)
-	fmt.Println(vote)
 	conWalletAddress := common.HexToAddress(address)
 	conn := getConn()
 	transactOpts := getTransactOpts()

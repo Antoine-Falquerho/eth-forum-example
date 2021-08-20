@@ -2,7 +2,6 @@ package main
 
 import (
 	"text/template"
-	"fmt"
 	"github.com/Antoine-Falquerho/eth-forum/helpers"
 	"log"
 	"time"
@@ -13,6 +12,15 @@ import (
 	"errors"
 )
 
+type postForm struct {
+	Title string
+	Content string
+}
+
+type UserForm struct {
+	Username string
+}
+
 // https://towardsdev.com/creating-a-simple-ethereum-smart-contract-in-golang-138b9439f64e
 func main(){
 	http.HandleFunc("/", homePage)
@@ -20,14 +28,12 @@ func main(){
 	http.HandleFunc("/users/update", updateAccount)
 	http.HandleFunc("/posts/new", addPostRequest)
 	http.HandleFunc("/add_user_vote", addUserVote)
-	//http.HandleFunc("/view/", makeHandler(homePage))
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
 //https://freshman.tech/web-development-with-go/
 func homePage(w http.ResponseWriter, r *http.Request){
 	posts := helpers.GetPosts()
-	fmt.Println("Endpoint Hit: homePage")
 	address, err := getSessionAddress(r)
 	if err != nil{
 		http.Redirect(w, r, "/", http.StatusSeeOther)
@@ -46,8 +52,6 @@ func homePage(w http.ResponseWriter, r *http.Request){
 	t.Execute(w, p)
 }
 
-// https://astaxie.gitbooks.io/build-web-application-with-golang/content/en/06.1.html
-// To use cookies
 func login(w http.ResponseWriter, r *http.Request){
 	var p = make(map[string]string)
 	json.NewDecoder(r.Body).Decode(&p)
@@ -55,12 +59,7 @@ func login(w http.ResponseWriter, r *http.Request){
 	expiration := time.Now().Add(365 * 24 * time.Hour)
 	cookie := http.Cookie{Name: "address", Value: p["address"], Expires: expiration}
 	http.SetCookie(w, &cookie)
-}
-
-
-type postForm struct {
-	Title string
-	Content string
+	w.Write([]byte("OK"))
 }
 
 func addPostRequest(w http.ResponseWriter, r *http.Request){
@@ -81,10 +80,6 @@ func addPostRequest(w http.ResponseWriter, r *http.Request){
 
 	helpers.AddPost(address, newPost.Title, newPost.Content)
 	http.Redirect(w, r, "/", http.StatusSeeOther)
-}
-
-type UserForm struct {
-	Username string
 }
 
 func updateAccount(w http.ResponseWriter, r *http.Request){
