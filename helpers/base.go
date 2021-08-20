@@ -1,7 +1,6 @@
 package helpers
 
 import (
-	"fmt"
 	"github.com/Antoine-Falquerho/eth-forum/contracts"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
@@ -30,9 +29,6 @@ func getConn() *contracts.Forum{
 }
 
 func getTransactOpts() (*bind.TransactOpts ){
-	fmt.Println("Hello World")
-
-	//walletAddress := common.HexToAddress(WALLET_ADDRESS)
 	privateKey, _ := crypto.HexToECDSA(PRIVATE_KEY)
 	transactOpts, err := bind.NewKeyedTransactorWithChainID(privateKey, big.NewInt(1337))
 	if err != nil {
